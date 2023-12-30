@@ -1,40 +1,37 @@
 import React from "react";
 import { useEffect, useState } from "react";
-// import useAuth from "../../hooks/useAuth";
-
 import axios from "axios";
 
 const HomePage = () => {
-  // The "user" value from this Hook contains user information (id, userName, email) from the decoded token
-  // The "token" value is the JWT token sent from the backend that you will send back in the header of any request requiring authentication
-  // const [user, token] = useAuth();
-  const [cars, setCars] = useState([]);
+  const [weatherDetails, setWeatherDetails] = useState();
+  const [zipCode, setZipCode] = useState();
 
-  useEffect(() => {
-    fetchCars();
-  }, []);
-
-  const fetchCars = async () => {
+  const displayWeatherDetails = async () => {
     try {
-      let response = await axios.get("https://localhost:5001/api/cars/myCars");
-      setCars(response.data);
+      let response = await axios.get(
+        `https://api.openweathermap.org/data/2.5/weather?zip=${parseInt(
+          zipCode,
+          10
+        )},US&units=imperial&appid=440ed8745d5dd10a03e50ff8bfac2665`
+      );
+      setWeatherDetails(response.data);
+      console.log(weatherDetails);
     } catch (error) {
-      console.log(error.response.data);
+      console.log(error);
     }
   };
 
-  return (
-    <div className="container">
-      {console.log(user)}
-      <h1>Home Page for {user.userName}!</h1>
-      {cars &&
-        cars.map((car) => (
-          <p key={car.id}>
-            {car.year} {car.model} {car.make}
-          </p>
-        ))}
+  function handleSubmit(event) {
+    event.preventDefault();
+    if (zipCode) {
+      displayWeatherDetails(zipCode);
+    }
+  }
+  return(
+    <div>
+      
     </div>
-  );
+  )
 };
 
 export default HomePage;
